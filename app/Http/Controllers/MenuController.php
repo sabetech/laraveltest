@@ -93,6 +93,35 @@ class MenuController extends BaseController
      */
 
     public function getMenuItems() {
-        throw new \Exception('implement in coding task 3');
+        $menuItems = MenuItem::get();
+        $menuItems = $this->fillChildren($menuItems);
+        return response()->json($menuItems);
+    }
+
+    //loop through the menu items and fill in the children
+    public function fillInChildren($menusItems) {
+
+        foreach($menusItems as $menuItem) {
+            $menuItem->children = MenuItem::where('parent_id', $menuItem->id)->get();
+            //Narh .. this is becoming problematic ... 
+        }
+        return $menusItems;
+    }
+
+    //recursion to the rescue to fill in the nested children menu items
+    public function fillChildren($items, $parentId = null) {
+        $branch = [];
+        foreach ($items as $item) {
+            // echo $item->parent_id . ' ' . $parentId;
+            if ($item->parent_id == $parentId) {
+                $children = $this->fillChildren($items, $item->id);
+                if ($children) {
+                    $item->children = $children;
+                }
+                $branch[] = $item;
+            }
+        }
+        return $branch;
+        //this works without another extra queries: I just hope it doesn't call itself forever!
     }
 }
