@@ -13,14 +13,4 @@ class Event extends Model
         return $this->hasMany(Workshop::class);
     }
 
-    // public function scopeFutureEvents($query)
-    // {
-    //     return $query->where('start', '>', now());
-    // }
-
-    // public function scopeWarmupEvents($query)
-    // {
-    //     return $query->where('start', '<', now());
-    // }
-
 }
