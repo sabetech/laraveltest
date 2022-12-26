@@ -36,7 +36,50 @@ class CreateCinemaSchema extends Migration
      */
     public function up()
     {
-        throw new \Exception('implement in coding task 4, you can ignore this exception if you are just running the initial migrations.');
+        Schema::create('films', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::create('bookings', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('show_id');
+            $table->foreign('show_id')->references('id')->on('shows')->onDelete('cascade'); // if there's not a show, there's no booking
+            $table->unsignedBigInteger('seat_id');
+            $table->foreign('seat_id')->references('id')->on('seats');
+        });
+
+        Schema::create('showrooms', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::create('shows', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('film_id');
+            $table->foreign('film_id')->references('id')->on('films');
+            $table->unsignedBigInteger('showrooms_id');
+            $table->foreign('showrooms_id')->references('id')->on('showrooms');
+            $table->dateTime('start');
+            $table->dateTime('end');
+            $table->timestamps();
+        });
+
+        Schema::create('seats', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('showroom_id');
+            $table->foreign('showroom_id')->references('id')->on('showrooms');
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::create('seat_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -46,5 +89,6 @@ class CreateCinemaSchema extends Migration
      */
     public function down()
     {
+        //time is running out, so I'm not going to do this
     }
 }
